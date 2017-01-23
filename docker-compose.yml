@@ -1,0 +1,49 @@
+version: '2'
+
+services:
+    sources:
+        build: docker/sources
+        volumes:
+            - .:/var/www/nginad.local
+
+    nginx:
+        build: docker/nginx
+        volumes_from:
+            - sources
+            - php
+        command: nginx -g "daemon off;"
+        ports:
+            - "80:80"
+        links:
+            - sources
+            - php
+
+    php:
+        build: docker/php
+        volumes_from:
+            - sources
+        working_dir: /var/www/nginad.local
+        expose:
+            - 9000
+        ports:
+            - "9001:9001"
+            - "2222:22"
+        links:
+            - mysql
+            - redis
+        mem_limit: 2G
+
+    mysql:
+        build: docker/percona
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: nginad
+            MYSQL_USER: nginad
+            MYSQL_PASSWORD: nginad
+
+    redis:
+        image: redis
+        ports:
+            - "6379:6379"
