@@ -51,7 +51,7 @@ $this->headScript()->prependFile($this->basePath() . '/js/script.js');
     	   		$approval = false;
     	   		// fixes bad auth_User data from previous signup bug which was fixed in 1.4
     	   		if (!is_object($userData)):
-    	   			continue;
+    	   			return;
     	   		endif;
     	   		if(isset($userData) && $userData->user_enabled == 1 && $userData->user_verified == 1):
     	   			$approval = true;
